@@ -330,19 +330,36 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         //todo: dispose player & event handlers
     }
     
+    func encodeFileName(uri: String) -> String{
+        var fileComponents = uri.components(separatedBy: "/")
+        guard let filename = fileComponents.popLast()
+        else {
+            return ""
+        }
+        let urlStr = fileComponents.joined(separator: "/") + "/" + (filename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")
+        return urlStr
+    }
+    
     func setMediaPlayerUrl(uri: String, isAssetUrl: Bool, autoPlay: Bool, hwAcc: Int, options: [String]){
         self.vlcMediaPlayer.stop()
-        
+        if uri == "file://" {
+            return
+        }
         var media: VLCMedia
         if(isAssetUrl){
-            guard let path = Bundle.main.path(forResource: uri, ofType: nil)
+            let urlStr = encodeFileName(uri: uri)
+            guard let path = Bundle.main.path(forResource: urlStr, ofType: nil)
             else {
                 return
             }
             media = VLCMedia(path: path)
         }
         else{
-            guard let url = URL(string: uri)
+            var urlStr = uri
+            if uri.starts(with: "file://"){
+                urlStr = encodeFileName(uri: uri)
+            }
+            guard let url = URL(string: urlStr)
             else {
                 return
             }

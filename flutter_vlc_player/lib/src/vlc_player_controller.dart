@@ -39,6 +39,10 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   /// Initialize vlc player when the platform is ready automatically
   final bool autoInitialize;
 
+  /// Set keep playing video in background, when app goes in background.
+  /// The default value is false.
+  final bool allowBackgroundPlayback;
+
   /// This is a callback that will be executed once the platform view has been initialized.
   /// If you want the media to play as soon as the platform view has initialized, you could just call
   /// [VlcPlayerController.play] in this callback. (see the example).
@@ -91,14 +95,15 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   VlcPlayerController.asset(
     this.dataSource, {
     this.autoInitialize = true,
+    this.allowBackgroundPlayback = false,
     this.package,
     this.hwAcc = HwAcc.auto,
     this.autoPlay = true,
     this.options,
     @Deprecated('Please, use the addOnInitListener method instead.')
-        VoidCallback? onInit,
+    VoidCallback? onInit,
     @Deprecated('Please, use the addOnRendererEventListener method instead.')
-        RendererCallback? onRendererHandler,
+    RendererCallback? onRendererHandler,
   })  : _dataSourceType = DataSourceType.asset,
         _onInit = onInit,
         _onRendererHandler = onRendererHandler,
@@ -112,13 +117,14 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   VlcPlayerController.network(
     this.dataSource, {
     this.autoInitialize = true,
+    this.allowBackgroundPlayback = false,
     this.hwAcc = HwAcc.auto,
     this.autoPlay = true,
     this.options,
     @Deprecated('Please, use the addOnInitListener method instead.')
-        VoidCallback? onInit,
+    VoidCallback? onInit,
     @Deprecated('Please, use the addOnRendererEventListener method instead.')
-        RendererCallback? onRendererHandler,
+    RendererCallback? onRendererHandler,
   })  : package = null,
         _dataSourceType = DataSourceType.network,
         _onInit = onInit,
@@ -132,13 +138,14 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   VlcPlayerController.file(
     File file, {
     this.autoInitialize = true,
+    this.allowBackgroundPlayback = true,
     this.hwAcc = HwAcc.auto,
     this.autoPlay = true,
     this.options,
     @Deprecated('Please, use the addOnInitListener method instead.')
-        VoidCallback? onInit,
+    VoidCallback? onInit,
     @Deprecated('Please, use the addOnRendererEventListener method instead.')
-        RendererCallback? onRendererHandler,
+    RendererCallback? onRendererHandler,
   })  : dataSource = 'file://${file.path}',
         package = null,
         _dataSourceType = DataSourceType.file,
@@ -177,7 +184,9 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
       throw Exception('Already Initialized');
     }
 
-    _lifeCycleObserver = VlcAppLifeCycleObserver(this)..initialize();
+    if (!allowBackgroundPlayback) {
+      _lifeCycleObserver = VlcAppLifeCycleObserver(this)..initialize();
+    }
 
     await vlcPlayerPlatform.create(
       viewId: _viewId,
@@ -207,7 +216,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             errorDescription: VlcPlayerValue.noError,
           );
           break;
-
         case VlcMediaEventType.paused:
           value = value.copyWith(
             isPlaying: false,
@@ -215,7 +223,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             playingState: PlayingState.paused,
           );
           break;
-
         case VlcMediaEventType.stopped:
           value = value.copyWith(
             isPlaying: false,
@@ -225,7 +232,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             position: Duration.zero,
           );
           break;
-
         case VlcMediaEventType.playing:
           value = value.copyWith(
             isEnded: false,
@@ -242,7 +248,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             errorDescription: VlcPlayerValue.noError,
           );
           break;
-
         case VlcMediaEventType.ended:
           value = value.copyWith(
             isPlaying: false,
@@ -253,7 +258,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             position: event.position,
           );
           break;
-
         case VlcMediaEventType.buffering:
         case VlcMediaEventType.timeChanged:
           value = value.copyWith(
@@ -275,7 +279,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             errorDescription: VlcPlayerValue.noError,
           );
           break;
-
         case VlcMediaEventType.mediaChanged:
           break;
 
@@ -286,7 +289,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             recordPath: event.recordPath,
           );
           break;
-
         case VlcMediaEventType.error:
           value = value.copyWith(
             isPlaying: false,
@@ -296,15 +298,13 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
             errorDescription: VlcPlayerValue.unknownError,
           );
           break;
-
         case VlcMediaEventType.unknown:
           break;
       }
     }
 
     void errorListener(Object obj) {
-      final e = obj as PlatformException;
-      value = VlcPlayerValue.erroneous(e.message);
+      value = VlcPlayerValue.erroneous(obj.toString());
       if (!initializingCompleter.isCompleted) {
         initializingCompleter.completeError(obj);
       }
@@ -420,7 +420,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     await _setStreamUrl(
       dataSource,
       dataSourceType: DataSourceType.network,
-      package: null,
       autoPlay: autoPlay,
       hwAcc: hwAcc,
     );
@@ -441,7 +440,6 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
     await _setStreamUrl(
       dataSource,
       dataSourceType: DataSourceType.file,
-      package: null,
       autoPlay: autoPlay,
       hwAcc: hwAcc,
     );
@@ -918,8 +916,10 @@ class VlcPlayerController extends ValueNotifier<VlcPlayerValue> {
   Future<void> startRendererScanning({String? rendererService}) async {
     _throwIfNotInitialized('startRendererScanning');
 
-    return vlcPlayerPlatform.startRendererScanning(_viewId,
-        rendererService: rendererService ?? '');
+    return vlcPlayerPlatform.startRendererScanning(
+      _viewId,
+      rendererService: rendererService ?? '',
+    );
   }
 
   /// Stop vlc cast and scan

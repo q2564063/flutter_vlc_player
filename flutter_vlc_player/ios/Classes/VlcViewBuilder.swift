@@ -71,8 +71,6 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
             options: input.options as? [String] ?? []
         )
     }
-<<<<<<< HEAD
-=======
 
     public func activateAudioSession(
             active: Bool
@@ -88,7 +86,6 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
 //        }
 //        try session.setCategory(category, options: combinedOptions)
 //    }
->>>>>>> dev
     
     public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         

@@ -335,14 +335,6 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     func encodeFileName(uri: String) -> String{
-<<<<<<< HEAD
-        var fileComponents = uri.components(separatedBy: "/")
-        guard let filename = fileComponents.popLast()
-        else {
-            return ""
-        }
-        let urlStr = fileComponents.joined(separator: "/") + "/" + (filename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")
-=======
         // var fileComponents = uri.components(separatedBy: "/")
         // guard let filename = fileComponents.popLast()
         // else {
@@ -353,7 +345,6 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         
         let urlStr = uri.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         
->>>>>>> dev
         return urlStr
     }
     

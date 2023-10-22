@@ -1,5 +1,9 @@
 import Foundation
 import Flutter
+<<<<<<< HEAD
+=======
+import AVKit
+>>>>>>> dev
 
 public class VLCViewBuilder: NSObject, VlcPlayerApi{
     var players = [Int:VLCViewController]()
@@ -54,7 +58,11 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
             mediaUrl = input.uri ?? ""
             isAssetUrl = false
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> dev
         player?.setMediaPlayerUrl(
             uri: mediaUrl,
             isAssetUrl: isAssetUrl,
@@ -63,6 +71,24 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
             options: input.options as? [String] ?? []
         )
     }
+<<<<<<< HEAD
+=======
+
+    public func activateAudioSession(
+            active: Bool
+    ) throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setActive(active)
+    }
+
+//    public func apply() throws {
+//        let session = AVAudioSession.sharedInstance()
+//        let combinedOptions = options.reduce(AVAudioSession.CategoryOptions()) {
+//            [$0, $1]
+//        }
+//        try session.setCategory(category, options: combinedOptions)
+//    }
+>>>>>>> dev
     
     public func dispose(_ input: ViewMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
         

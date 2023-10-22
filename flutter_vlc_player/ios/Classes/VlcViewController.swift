@@ -40,7 +40,11 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         //
         self.mediaEventChannel.setStreamHandler(mediaEventChannelHandler)
         self.rendererEventChannel.setStreamHandler(rendererEventChannelHandler)
+<<<<<<< HEAD
         self.vlcMediaPlayer.drawable = self.hostedView
+=======
+        // self.vlcMediaPlayer.drawable = self.hostedView
+>>>>>>> dev
         self.vlcMediaPlayer.delegate = self.mediaEventChannelHandler
     }
     
@@ -331,12 +335,25 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     func encodeFileName(uri: String) -> String{
+<<<<<<< HEAD
         var fileComponents = uri.components(separatedBy: "/")
         guard let filename = fileComponents.popLast()
         else {
             return ""
         }
         let urlStr = fileComponents.joined(separator: "/") + "/" + (filename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")
+=======
+        // var fileComponents = uri.components(separatedBy: "/")
+        // guard let filename = fileComponents.popLast()
+        // else {
+        //     return ""
+        // }
+        // let urlStr = fileComponents.joined(separator: "/") + "/" + (filename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")
+        // return urlStr
+        
+        let urlStr = uri.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        
+>>>>>>> dev
         return urlStr
     }
     
@@ -357,7 +374,11 @@ public class VLCViewController: NSObject, FlutterPlatformView {
         else{
             var urlStr = uri
             if uri.starts(with: "file://"){
+<<<<<<< HEAD
                 urlStr = encodeFileName(uri: uri)
+=======
+                urlStr = "file://" + encodeFileName(uri: uri.replacingOccurrences(of: "file://", with: ""))
+>>>>>>> dev
             }
             guard let url = URL(string: urlStr)
             else {
@@ -365,7 +386,11 @@ public class VLCViewController: NSObject, FlutterPlatformView {
             }
             media = VLCMedia(url: url)
         }
+<<<<<<< HEAD
         
+=======
+        	
+>>>>>>> dev
         if(!options.isEmpty){
             for option in options {
                 media.addOption(option)

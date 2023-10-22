@@ -327,7 +327,11 @@ public class VLCViewController: NSObject, FlutterPlatformView {
     }
     
     public func dispose(){
-        //todo: dispose player & event handlers
+        self.mediaEventChannel.setStreamHandler(nil);
+        self.rendererEventChannel.setStreamHandler(nil);
+        self.rendererdiscoverers.removeAll()
+        self.rendererEventChannelHandler.renderItems.removeAll()
+        self.vlcMediaPlayer.stop()
     }
     
     func encodeFileName(uri: String) -> String{

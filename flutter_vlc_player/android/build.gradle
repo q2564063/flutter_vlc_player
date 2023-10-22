@@ -22,7 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     defaultConfig {
         minSdkVersion 19
@@ -39,7 +39,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+<<<<<<< HEAD
     implementation 'org.videolan.android:libvlc-all:3.6.0-eap2'
+=======
+    implementation 'org.videolan.android:libvlc-all:3.6.0-eap9'
+>>>>>>> 8e44c0492b3bd9c022dae829c1116eb65c11e9c9
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.2.0'

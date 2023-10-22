@@ -57,12 +57,9 @@ public class VLCViewBuilder: NSObject, VlcPlayerApi{
             mediaUrl = input.uri ?? ""
             isAssetUrl = false
         }
-<<<<<<< HEAD
-=======
         
         options = input.options as? [String] ?? []
         
->>>>>>> eb8ff33e1f620ecb177dcf2add74b9b7fd22699c
         player?.setMediaPlayerUrl(
             uri: mediaUrl,
             isAssetUrl: isAssetUrl,
